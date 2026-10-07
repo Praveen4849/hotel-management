@@ -2,13 +2,18 @@ const { Pool } = require('pg');
 require('dotenv').config();
 
 // PostgreSQL connection configuration
-const poolConfig = {
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || '5432', 10),
-  user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || 'postgres',
-  database: process.env.DB_NAME || 'hotel_db',
-};
+const poolConfig = process.env.DATABASE_URL
+  ? {
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.DATABASE_SSL === 'false' ? false : { rejectUnauthorized: false },
+    }
+  : {
+      host: process.env.DB_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT || '5432', 10),
+      user: process.env.DB_USER || 'postgres',
+      password: process.env.DB_PASSWORD || 'postgres',
+      database: process.env.DB_NAME || 'hotel_db',
+    };
 
 let pool = new Pool(poolConfig);
 let isFallbackMode = false;
